@@ -20,7 +20,7 @@ public class BookRepository {
     public List<Book> getBooksByRating(float rating) {
 
         // Perform the Query
-        final SqlRowSet rs = jdbcTemplate.queryForRowSet(SQL_SELECT_STRING_BY_RATING, rating);
+        final SqlRowSet rs = jdbcTemplate.queryForRowSet(SQL_SELECT_BOOK_BY_RATING, rating);
 
         final List<Book> books = new LinkedList<>();
 
@@ -33,4 +33,16 @@ public class BookRepository {
         return books;
     }
 
+    public List<Book> getBooksByNameAndLimit(String name, int limit) {
+
+        final SqlRowSet rs = jdbcTemplate.queryForRowSet(SQL_SELECT_BOOK_BY_NAME_AND_LIMIT, name, limit);
+
+        final List<Book> books = new LinkedList<>();
+
+        while (rs.next()) {
+            books.add(Book.create(rs));
+        }
+
+        return books;
+    }
 }
