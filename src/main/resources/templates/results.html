@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Search Results</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
     <h1> RESULTS </h1>
     <br>
 
-    <div th:each="book:${bookList}">
+    <div th:each="book:${bookList}" id="book">
         <p>Title: <span data-th-text="${book.title}"></span></p>
         <p>Description: <span data-th-text="${book.description}"></span></p>
         <p>Rating: <span data-th-text="${book.rating}"></span></p>
-        <a src="${book.url}">
+        <img th:attr="src=${book.url}">
+        <br>
     </div>
 </body>
 </html>
