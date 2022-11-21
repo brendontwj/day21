@@ -3,40 +3,40 @@ package vttp2022.day21.day21.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
 import vttp2022.day21.day21.models.Book;
+import vttp2022.day21.day21.models.Query;
 import vttp2022.day21.day21.repositories.BookRepository;
 
-@RestController
-@RequestMapping(path = "/api/rating", produces = MediaType.APPLICATION_JSON_VALUE)
+@Controller
+@RequestMapping(path = "database")
 public class BookController {
-
-    @Autowired
-    private BookRepository bookRepo;
     
-    @GetMapping(path = "{rating}")
-    public ResponseEntity<String> getRating(@PathVariable Float rating) {
+    @Autowired
+    BookRepository bookRepo;
 
-        List<Book> books = bookRepo.getBooksByRating(rating);
+    @GetMapping
+    public String showQueryPage(Model model) {
+        model.addAttribute("query", new Query());
+        return "index";
+    }
 
-        JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
+    @PostMapping("queryInput")
+    public String showResultsPage(@ModelAttribute Query query, Model model) {
+        String name = query.getName();
+        int limit = query.getLimit();
+        name = '%' + name + '%';
 
-        for (Book b: books)
-            arrBuilder.add(b.toJSON());
+        List<Book> books = bookRepo.getBooksByNameAndLimit(name,limit);
 
-        JsonArray result = arrBuilder.build();
-        return ResponseEntity.status(HttpStatus.OK)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(result.toString());
+        model.addAttribute("bookList", books);
+
+        return "results";
     }
 }
